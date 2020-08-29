@@ -1,4 +1,5 @@
 # app-food
+Frontend Food App is a web application created with the Vue JS framework version 2, here I use vuex, mixins, custom directive, local storage, login and register
 
 ## Project setup
 ```
