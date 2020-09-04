@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <Nav />
+    <div class="nav">
+      <Nav v-sticky="position"/>
+    </div>
     <div class="container">
       <header>
         <div class="jumbotron">
@@ -26,6 +28,11 @@ export default {
   name: 'Landing',
   components: {
     Nav
+  },
+  data () {
+    return {
+      position: 'fixed'
+    }
   }
 }
 </script>
@@ -37,7 +44,9 @@ html, body {
     padding: 0;
 }
 nav {
-    height: 80px;
+  width: 82%;
+  height: 80px;
+  background-color: #fff;
 }
 .title {
     font-weight: bold;
@@ -50,6 +59,7 @@ header {
     font-family: 'Satisfy', sans-serif;
     height: 400px;
     padding-top: 50px;
+    margin-top: 80px;
     background-image: url('../../../assets/background.jpg');
 }
 .jumbotron-content {

@@ -1,55 +1,101 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import router from '../router/index'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    username: 'regina putri',
+    count: 1,
+    minCount: 0,
     user: {},
     token: localStorage.getItem('token') || null,
     products: [],
-    id: '',
-    name: '',
-    price: '',
-    image: '',
-    status: '',
-    idCategory: ''
+    paginations: null,
+    carts: []
   },
   mutations: {
+    setMinus (state) {
+      state.count--
+      // state.minCount
+    },
+    setPlush (state) {
+      state.count++
+    },
     setUser (state, payload) {
       state.user = payload
       state.token = payload.token
     },
     setProducts (state, payload) {
       state.products = payload
+    },
+    setProductsByName (state, payload) {
+      state.products = payload
+    },
+    setProductsByPrice (state, payload) {
+      state.products = payload
+    },
+    setProductsByNewest (state, payload) {
+      state.products = payload
+    },
+    setPaginations (state, payload) {
+      state.paginations = payload
+    },
+    addCart (state, payload) {
+      const isCart = state.carts.find((item) => {
+        return item.id === payload.id
+      })
+      console.log(isCart)
+      if (!isCart) {
+        const item = payload
+        item.count = 1
+        state.carts.push(item)
+      } else {
+        console.log(payload.id)
+        state.carts = state.carts.filter((item) => {
+          return item.id !== payload.id
+        })
+      }
     }
   },
   actions: {
-    interceptorsResponse () {
+    interceptorsResponse (context) {
       axios.interceptors.response.use(function (response) {
         return response
       }, function (error) {
-        console.log(error)
+        console.log(error.response.data.result.message)
+        if (error.response.status === 401) {
+          console.log(error.response)
+          if (error.response.data.result.message === 'invalid token') {
+            context.commit('setToken', null)
+            localStorage.removeItem('token')
+            router.push('/login')
+            alert('maaf anda tidak boleh merubah token dengan sendirinya')
+          } else if (error.response.data.result.message === 'token expired') {
+            context.commit('setToken', null)
+            localStorage.removeItem('token')
+            router.push('/login')
+            alert('maaf session habis silahkan login kembali')
+          }
+        }
         return Promise.reject(error)
       })
     },
-    interceptorsRequest (setex) {
-      console.log('interse')
+    interceptorsRequest (context) {
       axios.interceptors.request.use(function (config) {
-        config.headers.Authorization = `Bearer ${setex.state.token}`
+        config.headers.Authorization = `Bearer ${context.state.token}`
         return config
       }, function (error) {
         return Promise.reject(error)
       })
     },
-    register (setex, payload) {
+    register (context, payload) {
       return new Promise((resolve, reject) => {
         axios.post('http://localhost:8000/api/v1/users/register', payload)
           .then((res) => {
             console.log(res)
-            setex.commit('setUser', res.data.result)
+            context.commit('setUser', res.data.result)
             resolve(res.data.result[0])
           })
           .catch((err) => {
@@ -58,13 +104,14 @@ export default new Vuex.Store({
           })
       })
     },
-    login (setex, payload) {
+    login (context, payload) {
       return new Promise((resolve, reject) => {
         axios.post('http://localhost:8000/api/v1/users/login', payload)
           .then((res) => {
             console.log(res)
-            setex.commit('setUser', res.data.result)
+            context.commit('setUser', res.data.result)
             localStorage.setItem('token', res.data.result.token)
+            axios.defaults.headers.common.Authorization = `Bearer ${context.state.token}`
             resolve(res.data.result[0])
           })
           .catch((err) => {
@@ -73,33 +120,46 @@ export default new Vuex.Store({
           })
       })
     },
-    // logout (setex) {
-    //   axios.get('http://localhost:8000/api/v1/users')
-    //     .then((res) => {
-    //       setex.commit('setUser', res.data.result)
-    //       localStorage.removeItem('token', res.data.result.token)
-    //     })
-    // },
-    addProducts (setex, payload) {
+    insertProduct (context, payload) {
       return new Promise((resolve, reject) => {
         axios.post('http://localhost:8000/api/v1/products', payload)
           .then((res) => {
             console.log(res)
-            setex.commit('setProducts', res.data.result)
-            resolve(res.data.result[0])
+            resolve(res.data.result)
           })
           .catch((err) => {
-            console.log(err)
             reject(err)
           })
       })
     },
-    getProducts (setex) {
+    editProduct (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.patch('http://localhost:8000/api/v1/products/' + payload.id, payload.data)
+          .then((res) => {
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
+    },
+    deleteProduct (context, id) {
+      return new Promise((resolve, reject) => {
+        axios.delete('http://localhost:8000/api/v1/products/' + id)
+          .then((res) => {
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
+    },
+    getProducts (context) {
       return new Promise((resolve, reject) => {
         axios.get('http://localhost:8000/api/v1/products')
           .then((res) => {
             // console.log(res)
-            setex.commit('setProducts', res.data.result)
+            context.commit('setProducts', res.data.result)
             resolve(res.data.result)
           })
           .catch((err) => {
@@ -108,34 +168,52 @@ export default new Vuex.Store({
           })
       })
     },
-    deleteProducts (setex, id) {
+    getProductsByName (context) {
       return new Promise((resolve, reject) => {
-        axios.delete(`http://localhost:8000/api/v1/products/${id}`)
+        axios.get('http://localhost:8000/api/v1/products?sort=name')
           .then((res) => {
             // console.log(res)
-            setex.commit('setProducts', res.data.result)
+            context.commit('setProductsByName', res.data.result)
             resolve(res.data.result)
           })
           .catch((err) => {
-            console.log(err)
             reject(err)
           })
       })
     },
-    updateProducts (setex) {
+    getProductsByPrice (context) {
       return new Promise((resolve, reject) => {
-        axios.patch(`http://localhost:8000/api/v1/products/${this.id}`, {
-          name: this.name,
-          price: this.price,
-          image: this.image,
-          status: this.status,
-          idCategory: this.idCategory
-        })
+        axios.get('http://localhost:8000/api/v1/products?sort=price')
           .then((res) => {
-            setex.commit('setProducts', res.data.result)
+            // console.log(res)
+            context.commit('setProductsByPrice', res.data.result)
             resolve(res.data.result)
-            this.$router.push('/products')
-            alert('Update Data Success')
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
+    },
+    getProductsByNewest (context) {
+      return new Promise((resolve, reject) => {
+        axios.get('http://localhost:8000/api/v1/products?sort=createdAt')
+          .then((res) => {
+            // console.log(res)
+            context.commit('setProductsByNewest', res.data.result)
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            reject(err)
+          })
+      })
+    },
+    handleSearch (context, key) {
+      return new Promise((resolve, reject) => {
+        axios.get(`http://localhost:8000/api/v1/products?search=${key}`)
+          .then((res) => {
+            resolve(res.data.result)
+            context.commit('setProducts', res.data.result)
+            // context.commit('setPaginations', res.data.paginations)
           })
           .catch((err) => {
             console.log(err)
@@ -143,13 +221,39 @@ export default new Vuex.Store({
           })
       })
     }
+    // handlePagination (context, key) {
+    //   return new Promise((resolve, reject) => {
+    //     axios.get(`http://localhost:8000/api/v1/products?page=${key}`)
+    //       .then((res) => {
+    //         resolve(res.data.result)
+    //         // context.commit('setProducts', res.data.result)
+    //         context.commit('setPaginations', res.data.result.paginations)
+    //       })
+    //       .catch((err) => {
+    //         console.log(err)
+    //         reject(err)
+    //       })
+    //   })
+    // }
   },
   getters: {
+    getCount (state) {
+      return state.count
+    },
+    isRegister (state) {
+      return state.token == null
+    },
     isLogin (state) {
       return state.token !== null
     },
     products (state) {
       return state.products
+    },
+    getCart (state) {
+      return state.carts
+    },
+    countCart (state) {
+      return state.carts.length
     }
   }
 })

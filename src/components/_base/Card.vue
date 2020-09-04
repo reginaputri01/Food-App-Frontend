@@ -1,11 +1,11 @@
 <template>
   <div class="card-container">
-    <router-link to="/homeselect">
-      <img :src="image" alt="...">
-    </router-link>
-    <div class="name">
-      <h5>{{name}}</h5>
-      <h6>Rp. {{price}}</h6>
+    <div class="container-image" @click="$emit('select-product')">
+      <img :src="item.image" :class="active? 'active':''" alt="...">
+    </div>
+    <div class="desc">
+      <h5>{{item.name}}</h5>
+      <h6>Rp. {{item.price}}</h6>
     </div>
   </div>
 </template>
@@ -14,7 +14,14 @@
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Card',
-  props: ['image', 'name', 'price', 'id'],
+  props: {
+    item: {
+      type: Object
+    },
+    active: {
+      type: Boolean
+    }
+  },
   methods: {
     ...mapActions(['getProducts'])
   },
@@ -36,15 +43,21 @@ export default {
   background-color: transparent;
   border: none;
 }
-img {
-  border-radius: 10px 10px 0 0;
-  width: auto;
+.container-image{
+  width: 100%;
   height: 200px;
+  cursor: pointer;
 }
-img:hover {
-  opacity: 0.5;
+.container-image img{
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
-.name {
+.active{
+  filter: brightness(0.4);
+}
+.desc {
   text-align: left;
 }
 h5 {

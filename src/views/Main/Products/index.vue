@@ -1,42 +1,132 @@
 <template>
-  <div class="flex-row">
-    <Sidebar />
-    <div class="flex-column body">
-      <div class="flex-row head">
-        <Navbar class="navbar"/>
-      </div>
-      <div class="product-container">
-        <div class="btn-container">
-          <router-link to="/insert">
-            <ButtonAdd />
-          </router-link>
+  <div>
+    <div class="container-fuild">
+      <div class="flex-row">
+        <Sidebar />
+        <div class="flex-column body">
+          <div class="flex-row head">
+            <Navbar class="navbar"/>
+          </div>
+          <div class="product-container">
+            <div class="btn-container">
+              <button class="btn btn-primary" @click="toggleModal">+ Add Data</button>
+            </div>
+            <TableProducts @event-update="handleUpdate" @event-delete="handleDelete"/>
+          </div>
         </div>
-        <TableProducts v-on:update-data="getData"/>
       </div>
     </div>
+    <Modal v-show="modalActive" :data="dataModal" @close-modal="toggleModal" @fire-event="handleEventModal" />
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Modal from '../../../components/_base/Modal'
 import Navbar from '../../../components/_base/Navbar'
 import Sidebar from '../../../components/_base/Sidebar'
 import TableProducts from '../../../components/_base/TableProducts'
-import ButtonAdd from '../../../components/_base/ButtonAdd'
+// import ButtonAdd from '../../../components/_base/ButtonAdd'
 
 export default {
   name: 'Products',
   components: {
+    Modal,
     Navbar,
     Sidebar,
-    TableProducts,
-    ButtonAdd
+    TableProducts
+    // ButtonAdd
+  },
+  data: () => ({
+    modalActive: false,
+    dataModal: {
+      id: null,
+      name: '',
+      image: null,
+      price: '',
+      status: 1,
+      idCategory: 0
+    }
+  }),
+  methods: {
+    ...mapActions(['getProducts', 'insertProduct', 'editProduct', 'deleteProduct']),
+    toggleModal () {
+      this.modalActive = !this.modalActive
+      if (!this.modalActive) {
+        this.clearModal()
+      }
+    },
+    handleEventModal () {
+      this.dataModal.id ? this.updateProduct() : this.addProduct()
+    },
+    updateProduct () {
+      const data = new FormData()
+      data.append('name', this.dataModal.name)
+      data.append('image', this.dataModal.image)
+      data.append('price', this.dataModal.price)
+      data.append('status', this.dataModal.status)
+      data.append('idCategory', this.dataModal.idCategory)
+      const container = {
+        id: this.dataModal.id,
+        data: data
+      }
+      this.editProduct(container)
+        .then(res => {
+          this.clearModal()
+          this.getProducts()
+          alert('update success')
+        })
+    },
+    handleUpdate (data) {
+      this.modalActive = true
+      this.dataModal.id = data.id
+      this.dataModal.name = data.name
+      this.dataModal.image = data.image
+      this.dataModal.price = data.price
+      this.dataModal.status = data.status
+      this.dataModal.idCategory = data.idCategory
+    },
+    handleDelete (id) {
+      console.log('delete')
+      // this.dataModal.id = id
+      this.deleteProduct(id)
+      this.getProducts()
+    },
+    clearModal () {
+      this.dataModal.id = null
+      this.dataModal.name = ''
+      this.dataModal.image = null
+      this.dataModal.price = ''
+      this.dataModal.status = ''
+      this.dataModal.idCategory = 0
+      this.modalActive = false
+    },
+    addProduct () {
+      const data = new FormData()
+      data.append('name', this.dataModal.name)
+      data.append('image', this.dataModal.image)
+      data.append('price', this.dataModal.price)
+      data.append('status', this.dataModal.status)
+      data.append('idCategory', this.dataModal.idCategory)
+      this.insertProduct(data)
+        .then(res => {
+          this.clearModal()
+          this.getProducts()
+          alert('insert success')
+        })
+    }
+  },
+  computed: {
+    ...mapGetters({
+      products: 'products'
+    })
+  },
+  mounted () {
+    this.getProducts()
   }
 }
 </script>
 <style scoped>
-.colom {
-  background-color: chartreuse;
-}
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -51,25 +141,6 @@ export default {
 }
 .navbar {
     width: 100%;
-}
-.cart-header {
-  padding-top: 20px;
-  justify-content: center;
-  width: 30%;
-  height: 70px;
-}
-.cart-header h5 {
-  font-size: x-large;
-  font-weight: bold;
-}
-.item {
-  width: 20px;
-  height: 20px;
-  background-color: #57CAD5;
-  color: #fff;
-  border-radius: 20px;
-  margin-left: 5px;
-  margin-top: 5px;
 }
 .body {
   width: 100%;
@@ -86,17 +157,6 @@ export default {
   background-color: #efefef;
 }
 @media screen and (min-width: 200px) and (max-width: 960px) {
-  .cart-header h5{
-    font-size: large;
-  }
-  .item {
-    margin-top: 0;
-  }
-  .content {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-  }
   .product-container {
     width: 99%;
     height: auto;

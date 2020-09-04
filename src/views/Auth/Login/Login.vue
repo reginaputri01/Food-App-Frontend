@@ -1,7 +1,7 @@
 <template>
   <div class="container form-container">
     <h2 class="mb-4">Form Login</h2>
-    <form>
+    <form @submit.prevent="handleLogin">
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input type="email" class="form-control" id="exampleInputEmail1" v-model="email" aria-describedby="emailHelp" required>
@@ -10,7 +10,7 @@
         <label for="exampleInputPassword1">Password</label>
         <input type="password" class="form-control" v-model="password" id="exampleInputPassword1" required>
       </div>
-      <button type="submit" class="btn btn-danger" @click="handleLogin">Submit</button>
+      <button type="submit" class="btn btn-danger" :disabled="checkSubmit">Submit</button>
       <div class="account">
         <router-link to="/register"><small>You don't have an account yet? <b>Register</b></small></router-link>
       </div>
@@ -35,16 +35,27 @@ export default {
         email: this.email,
         password: this.password
       }
-      console.log(data)
       this.login(data)
         .then(() => {
           this.$router.push('/home')
         })
         .catch(() => {
-          alert('email/password failed')
+          alert('email or password failed')
         })
     },
     ...mapActions(['login'])
+  },
+  computed: {
+    checkSubmit () {
+      if (
+        this.email &&
+        this.password
+      ) {
+        return false
+      } else {
+        return true
+      }
+    }
   }
 }
 </script>

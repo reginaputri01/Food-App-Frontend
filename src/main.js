@@ -8,6 +8,12 @@ Vue.config.productionTip = false
 
 axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`
 
+Vue.directive('sticky', {
+  bind (el, binding) {
+    el.style.position = 'fixed'
+  }
+})
+
 new Vue({
   router,
   store,

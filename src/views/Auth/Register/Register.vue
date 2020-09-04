@@ -1,7 +1,7 @@
 <template>
   <div class="container form-container">
     <h2 class="mb-4">Form Register</h2>
-    <form>
+    <form @submit.prevent="handleRegister">
       <div class="form-group">
         <label for="exampleInputEmail1">Name</label>
         <input type="name" v-model="name" class="form-control" required>
@@ -14,7 +14,7 @@
         <label for="exampleInputPassword1">Password</label>
         <input type="password" v-model="password" class="form-control" required>
       </div>
-      <button type="submit" class="btn btn-primary" @click="handleRegister">Submit</button>
+      <button type="submit" class="btn btn-primary" :disabled="checkSubmit">Submit</button>
       <div class="account">
         <router-link to="/login"><small>You already have an account? <b>Login</b></small></router-link>
       </div>
@@ -28,6 +28,7 @@ export default {
   name: 'Register',
   data () {
     return {
+      errors: [],
       name: '',
       email: '',
       password: ''
@@ -43,10 +44,27 @@ export default {
       }
       this.register(data)
         .then(() => {
+          alert('Register success, please login now')
           this.$router.push('/login')
+        })
+        .catch((err) => {
+          console.log(err)
         })
     },
     ...mapActions(['register'])
+  },
+  computed: {
+    checkSubmit () {
+      if (
+        this.name &&
+        this.email &&
+        this.password
+      ) {
+        return false
+      } else {
+        return true
+      }
+    }
   }
 }
 </script>

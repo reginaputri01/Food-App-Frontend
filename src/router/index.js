@@ -5,8 +5,6 @@ import Register from '../views/Auth/Register/Register.vue'
 import Login from '../views/Auth/Login/Login.vue'
 import Home from '../views/Main/Home/index.vue'
 import Products from '../views/Main/Products/index.vue'
-import FormInsert from '../views/Main/Form/Insert.vue'
-import FormUpdate from '../views/Main/Form/Update.vue'
 import History from '../views/Main/History/index.vue'
 import store from '../store/index'
 
@@ -41,16 +39,6 @@ const routes = [
     name: 'Products',
     component: Products,
     meta: { requiresAuth: true }
-  },
-  {
-    path: '/insert',
-    name: 'FormInsert',
-    component: FormInsert
-  },
-  {
-    path: '/update',
-    name: 'FormUpdate',
-    component: FormUpdate
   },
   {
     path: '/history',

@@ -19,37 +19,13 @@
                     <img src="../../assets/folder.png" alt="icon" class="icon">
                 </router-link>
             </div>
-            <div class="img-container">
-                <img src="../../assets/add.png" alt="icon" class="icon add" @click="showModal">
-                <Modal
-                    v-show="isModalVisible"
-                    @close="closeModal"
-                />
-            </div>
         </div>
     </div>
 </template>
 
 <script>
-import Modal from './Modal'
 export default {
-  name: 'Sidebar',
-  components: {
-    Modal
-  },
-  data () {
-    return {
-      isModalVisible: false
-    }
-  },
-  methods: {
-    showModal () {
-      this.isModalVisible = true
-    },
-    closeModal () {
-      this.isModalVisible = false
-    }
-  }
+  name: 'Sidebar'
 }
 </script>
 
@@ -57,7 +33,7 @@ export default {
 .side-container {
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
     width: 8%;
-    height: 700px;
+    height: 560px;
 }
 .sidebar {
     display: flex;
