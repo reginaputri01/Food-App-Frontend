@@ -15,7 +15,6 @@ export default {
     ...mapActions(['interceptorsRequest', 'interceptorsResponse'])
   },
   created () {
-    console.log('hello')
     this.interceptorsRequest()
     this.interceptorsResponse()
   }

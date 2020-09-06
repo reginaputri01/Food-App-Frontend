@@ -44,18 +44,19 @@ export default {
   border: none;
 }
 .container-image{
+  border-radius: 10px 10px 0 0;
   width: 100%;
   height: 200px;
   cursor: pointer;
 }
 .container-image img{
-  border-radius: 10px 10px 0 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 .active{
   filter: brightness(0.4);
+  padding: 10px;
 }
 .desc {
   text-align: left;

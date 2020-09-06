@@ -18,7 +18,6 @@ export default new Vuex.Store({
   mutations: {
     setMinus (state) {
       state.count--
-      // state.minCount
     },
     setPlush (state) {
       state.count++
@@ -221,20 +220,6 @@ export default new Vuex.Store({
           })
       })
     }
-    // handlePagination (context, key) {
-    //   return new Promise((resolve, reject) => {
-    //     axios.get(`http://localhost:8000/api/v1/products?page=${key}`)
-    //       .then((res) => {
-    //         resolve(res.data.result)
-    //         // context.commit('setProducts', res.data.result)
-    //         context.commit('setPaginations', res.data.result.paginations)
-    //       })
-    //       .catch((err) => {
-    //         console.log(err)
-    //         reject(err)
-    //       })
-    //   })
-    // }
   },
   getters: {
     getCount (state) {

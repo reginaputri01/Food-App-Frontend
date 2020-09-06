@@ -37,10 +37,11 @@ export default {
       }
       this.login(data)
         .then(() => {
+          this.$toast.success('Login Success.')
           this.$router.push('/home')
         })
         .catch(() => {
-          alert('email or password failed')
+          this.$toast.error('Login Failed.')
         })
     },
     ...mapActions(['login'])

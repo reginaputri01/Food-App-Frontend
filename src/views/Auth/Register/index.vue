@@ -44,7 +44,7 @@ export default {
       }
       this.register(data)
         .then(() => {
-          alert('Register success, please login now')
+          this.$toast.succes('Register Success.')
           this.$router.push('/login')
         })
         .catch((err) => {

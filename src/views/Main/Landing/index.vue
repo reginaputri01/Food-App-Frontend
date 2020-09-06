@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="nav">
-      <Nav v-sticky="position"/>
+      <NavLanding v-sticky="position"/>
     </div>
     <div class="container">
       <header>
@@ -23,11 +23,13 @@
 </template>
 
 <script>
-import Nav from '../../../components/_base/Nav'
+import NavLanding from '../../../components/_base/NavLanding'
+import { exampleMixin } from '../../../../mixins.js'
 export default {
   name: 'Landing',
+  mixins: [exampleMixin],
   components: {
-    Nav
+    NavLanding
   },
   data () {
     return {

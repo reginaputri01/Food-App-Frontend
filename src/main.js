@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import VueToast from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-default.css'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -14,6 +16,9 @@ Vue.directive('sticky', {
   }
 })
 
+Vue.use(VueToast, {
+  position: 'bottom-right'
+})
 new Vue({
   router,
   store,

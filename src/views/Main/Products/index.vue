@@ -5,7 +5,7 @@
         <Sidebar />
         <div class="flex-column body">
           <div class="flex-row head">
-            <Navbar class="navbar"/>
+            <NavMenu class="navbar"/>
           </div>
           <div class="product-container">
             <div class="btn-container">
@@ -23,19 +23,17 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '../../../components/_base/Modal'
-import Navbar from '../../../components/_base/Navbar'
+import NavMenu from '../../../components/_base/NavMenu'
 import Sidebar from '../../../components/_base/Sidebar'
 import TableProducts from '../../../components/_base/TableProducts'
-// import ButtonAdd from '../../../components/_base/ButtonAdd'
 
 export default {
   name: 'Products',
   components: {
     Modal,
-    Navbar,
+    NavMenu,
     Sidebar,
     TableProducts
-    // ButtonAdd
   },
   data: () => ({
     modalActive: false,
@@ -71,10 +69,13 @@ export default {
         data: data
       }
       this.editProduct(container)
-        .then(res => {
+        .then((res) => {
           this.clearModal()
           this.getProducts()
-          alert('update success')
+          this.$toast.success('Update Success.')
+        })
+        .catch(() => {
+          this.$toast.error('Update Failed.')
         })
     },
     handleUpdate (data) {
@@ -87,8 +88,7 @@ export default {
       this.dataModal.idCategory = data.idCategory
     },
     handleDelete (id) {
-      console.log('delete')
-      // this.dataModal.id = id
+      this.$toast.success('Delete Success.')
       this.deleteProduct(id)
       this.getProducts()
     },
@@ -109,10 +109,13 @@ export default {
       data.append('status', this.dataModal.status)
       data.append('idCategory', this.dataModal.idCategory)
       this.insertProduct(data)
-        .then(res => {
+        .then((res) => {
           this.clearModal()
           this.getProducts()
-          alert('insert success')
+          this.$toast.success('Insert Success.')
+        })
+        .catch(() => {
+          this.$toast.error('Insert Failed.')
         })
     }
   },

@@ -27,11 +27,9 @@ export default {
   name: 'Cart',
   methods: {
     setPlush () {
-      // console.log('set')
       this.$store.commit('setPlush')
     },
     setMin () {
-      // console.log('set')
       this.$store.commit('setMinus')
     }
   },

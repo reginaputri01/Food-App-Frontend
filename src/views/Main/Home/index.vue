@@ -4,7 +4,7 @@
       <Sidebar />
       <div class="flex-column body">
         <div class="flex-row head">
-          <Navbar />
+          <NavMenu />
           <div class="flex-row cart-header">
             <h5>Cart</h5>
             <div class="item">
@@ -82,17 +82,15 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-// import mixins from '../../mixins'
-import Navbar from '../../../components/_base/Navbar'
+import NavMenu from '../../../components/_base/NavMenu'
 import Sidebar from '../../../components/_base/Sidebar'
 import Card from '../../../components/_base/Card'
 import Cart from '../../../components/_base/Cart'
 
 export default {
   name: 'Home',
-  // mixins: [mixins],
   components: {
-    Navbar,
+    NavMenu,
     Sidebar,
     Card,
     Cart
@@ -120,7 +118,6 @@ export default {
       this.getProductsByName()
         .then((res) => {
           console.log(res)
-          // this.products = res.data.result
         })
         .catch((err) => {
           console.log(err)
@@ -131,7 +128,6 @@ export default {
       this.getProductsByPrice()
         .then((res) => {
           console.log(res)
-          // this.products = res.data.result
         })
         .catch((err) => {
           console.log(err)
@@ -142,17 +138,13 @@ export default {
       this.getProductsByNewest()
         .then((res) => {
           console.log(res)
-          // this.products = res.data.result
         })
         .catch((err) => {
           console.log(err)
         })
     },
     setSearch (e) {
-      // console.log(e.target.value)
       this.handleSearch(e.target.value)
-      // const url = `?search=${e.target.value}`
-      // this.getProducts(url)
     },
     checkProductActive (id) {
       return this.getCart.find(item => {
