@@ -6,14 +6,11 @@ Frontend Food App is a web application created with the Vue JS framework version
 * [Built With](#built-with)
 * [Getting Started](#getting-started)
 * [Installation](#installation)
-* [Screenshots](#screenshots)
 * [Related Project](#related-project)
 * [Contact](#contact)
 
 ### Built With
 * [VueJS](http://vuejs.org/)
-* [Vue Bootstrap](https://bootstrap-vue.org/)
-* [Vue ChartJS](https://vue-chartjs.org/)
 
 <!-- GETTING STARTED -->
 ## Getting Started
