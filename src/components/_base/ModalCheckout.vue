@@ -1,40 +1,41 @@
 <template>
-    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalLongTitle">Checkout</h4>
-                    <h6 class="modal-title margin" id="exampleModalLongTitle">Receipt no: #010410919</h6>
-                    <p>Cashier : Pevita Pearce</p>
+                    <div class="head-container">
+                      <div class="title">
+                        <div class="checkout">Checkout</div>
+                        <div class="receipt">Receipt no: #010410919</div>
+                      </div>
+                      <div class="cashier-name">Cashier : Pevita Pearce</div>
+                    </div>
                 </div>
                 <div class="modal-body">
-                    <div class="flex-row">
-                        <h6 class="modal-title text-left margin-name">Coffee Latte 1x</h6>
-                        <p class="modal-title price-food">Rp. 15.000</p>
+                  <div class="main">
+                    <div class="content p-2">
+                      <div class="item mb-2" v-for="cart in getCart" :key="cart.id">
+                          <div>{{cart.name}} {{cart.count}}x</div>
+                          <div class="harga">Rp. {{cart.price}}</div>
+                      </div>
+                      <div class="item">
+                          <div>Ppn 10%</div>
+                          <div class="harga">Rp. {{totalPrice / 10}}</div>
+                      </div>
+                      <!-- <div class="price" v-for="cart in getCart" :key="cart.id">
+                        <div class="price">Rp. {{cart.price * cart.count}}</div>
+                      </div> -->
+                      <div class="row mt-3">
+                        <div class="price">Total Rp. {{totalPrice + (totalPrice / 10)}}</div>
+                      </div>
                     </div>
-                    <div class="flex-row">
-                        <h6 class="modal-title text-left margin-name">Black Forest 1x</h6>
-                        <p class="modal-title price-food">Rp. 30.000</p>
-                    </div>
-                    <div class="flex-row">
-                        <h6 class="modal-title text-left margin-name">Salmon Truffle Teriyaki 1x</h6>
-                        <p class="modal-title price-food">Rp. 60.000</p>
-                    </div>
-                    <div class="flex-row">
-                        <h6 class="modal-title text-left margin-name">Ppn 10%</h6>
-                        <p class="modal-title total-ppn">Rp. 10.500</p>
-                    </div>
-                    <div class="flex-row">
-                        <h6 class="modal-title total-price">Total Rp. 115.500</h6>
-                    </div>
-                    <div class="flex-row">
-                        <h6 class="modal-title text-left margin-name">Payment: Cash</h6>
-                    </div>
+                  <div class="method-payment">Payment : cash</div>
                 </div>
-                <div class="modal-footer flex-column">
-                    <button class="btn-modal" type="button">Print</button>
-                    <p>Or</p>
-                    <button class="btn-modal" type="button">Send Email</button>
+                </div>
+                <div class="column p-3 text-center">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Print</button>
+                <div>Or</div>
+                <button type="button" class="btn btn-secondary">Send Email</button>
                 </div>
             </div>
         </div>
@@ -42,11 +43,63 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
-  name: 'ModalCheckout'
+  name: 'ModalCheckout',
+  props: ['products'],
+  computed: {
+    ...mapGetters({
+      getCart: 'getCart',
+      totalPrice: 'totalPrice'
+    })
+  }
 }
 </script>
 
-<style>
-
+<style scoped>
+.head-container {
+  width: 100%;
+}
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+.title .checkout {
+  font-weight: 550;
+  font-size: 22px;
+}
+.title .receipt {
+  font-weight: 500;
+}
+.title .cashier-name {
+  font-size: 12px;
+  height: 50px;
+  font-weight: 600;
+}
+.harga {
+  width: 20%;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  font-weight: normal;
+  font-size: 17px;
+}
+.price {
+  width: 100%;
+  padding-right: 25px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+}
+button {
+  width: 100%;
+  border: none;
+}
+button:first-of-type {
+  background: #F24F8A;
+}
+button:last-of-type {
+  background: #57CAD5;
+}
 </style>

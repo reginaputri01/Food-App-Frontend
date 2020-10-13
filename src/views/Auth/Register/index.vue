@@ -44,10 +44,11 @@ export default {
       }
       this.register(data)
         .then(() => {
-          this.$toast.succes('Register Success.')
+          this.$toast.success('Register Success.')
           this.$router.push('/login')
         })
         .catch((err) => {
+          this.$toast.error(err.response.data.result)
           console.log(err)
         })
     },

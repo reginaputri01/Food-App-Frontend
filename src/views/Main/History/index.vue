@@ -36,7 +36,8 @@
                     <div class="head-container">
                         <h6>Recent Order</h6>
                     </div>
-                    <div class="title-table row">
+                    <TableHistory />
+                    <!-- <div class="title-table row">
                         <p class="col-sm">INVOICES</p>
                         <p class="col-sm">CASHIER</p>
                         <p class="col-sm">DATE</p>
@@ -49,7 +50,7 @@
                         <p class="col-sm">06 October 2019</p>
                         <p class="col-sm">Ice Tea, Salad With peanut sauce</p>
                         <p class="col-sm">Rp. 120.000</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -59,11 +60,13 @@
 <script>
 import NavHistory from '../../../components/_base/NavHistory'
 import Sidebar from '../../../components/_base/Sidebar'
+import TableHistory from '../../../components/_base/TableHistory'
 export default {
   name: 'History',
   components: {
     NavHistory,
-    Sidebar
+    Sidebar,
+    TableHistory
   }
 }
 </script>
@@ -113,7 +116,7 @@ export default {
     margin-top: 20px;
     padding: 20px;
     width: 98%;
-    height: 150px;
+    height: auto;
     background-color: #fff;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.25);
     border-radius: 10px;

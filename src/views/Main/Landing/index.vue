@@ -24,10 +24,10 @@
 
 <script>
 import NavLanding from '../../../components/_base/NavLanding'
-import { exampleMixin } from '../../../../mixins.js'
+// import { exampleMixin } from '../../../../mixins.js'
 export default {
   name: 'Landing',
-  mixins: [exampleMixin],
+  // mixins: [exampleMixin],
   components: {
     NavLanding
   },

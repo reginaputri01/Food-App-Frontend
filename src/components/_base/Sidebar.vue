@@ -19,6 +19,9 @@
                     <img src="../../assets/folder.png" alt="icon" class="icon">
                 </router-link>
             </div>
+            <div class="img-container">
+                <i class="fa fa-sign-out"></i>
+            </div>
         </div>
     </div>
 </template>

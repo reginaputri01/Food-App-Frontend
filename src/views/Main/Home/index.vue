@@ -45,18 +45,41 @@
                 <Card class="card" :active="checkProductActive(product.id)" :item="product" @select-product="addCart(product)"/>
               </div>
             </div>
-            <nav aria-label="Page navigation example">
-              <ul class="pagination justify-content-end">
-                <li class="page-item disabled">
-                  <a class="page-link" aria-controls="my-table">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link">1</a></li>
-                <li class="page-item"><a class="page-link">2</a></li>
+            <!-- Pagination -->
+            <!-- <nav aria-label="..." class="col-md-12">
+              <ul class="pagination">
                 <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
+                  <a v-show="page > 1" @click="prevPage(1)" class="page-link" href="#">Prev</a>
+                </li>
+                <li class="page-item disabled">
+                  <a v-show="page <= 1" class="page-link">Prev</a>
+                </li>
+                <li v-show="page >= totalPage && page != 1" @click="prevPage(2)" class="page-item">
+                  <a class="page-link" href="#">{{page - 2}}</a>
+                </li>
+                <li v-show="page > 1" @click="prevPage(1)" class="page-item">
+                  <a class="page-link" href="#">{{page - 1}}</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                  <span class="page-link">
+                    {{page}}
+                    <span class="sr-only">(current)</span>
+                  </span>
+                </li>
+                <li v-show="page < totalPage" @click="nextPage(1)" class="page-item">
+                  <a class="page-link" href="#">{{page + 1}}</a>
+                </li>
+                <li v-show="page <= 1 && totalPage != 1" @click="nextPage(2)" class="page-item">
+                  <a class="page-link" href="#">{{page + 2}}</a>
+                </li>
+                <li class="page-item">
+                  <a v-show="page < totalPage" @click="nextPage(1)" class="page-link" href="#">Next</a>
+                </li>
+                <li class="page-item disabled">
+                  <a v-show="page >= totalPage" class="page-link">Next</a>
                 </li>
               </ul>
-            </nav>
+            </nav> -->
           </div>
           <div class="flex-column cart">
             <div class="item-cart">
@@ -65,13 +88,14 @@
             <div class="checkout">
               <div class="flex-row ppn">
                 <h5>Total :</h5>
-                <h5>Rp. 105.000*</h5>
+                <h5>Rp. {{totalPrice}}*</h5>
               </div>
               <p>*Belum termasuk ppn</p>
               <div class="button-container">
-                <button type="button" data-toggle="modal" data-target="#exampleModalCenter">Checkout</button>
+                <button type="button" data-toggle="modal" data-target="#exampleModalCenter"  @click="toggleModal">Checkout</button>
                 <button>Cancel</button>
               </div>
+              <ModalCheckout v-show="modalActive" @click="showModalCheckout" />
             </div>
           </div>
         </div>
@@ -86,6 +110,7 @@ import NavMenu from '../../../components/_base/NavMenu'
 import Sidebar from '../../../components/_base/Sidebar'
 import Card from '../../../components/_base/Card'
 import Cart from '../../../components/_base/Cart'
+import ModalCheckout from '../../../components/_base/ModalCheckout'
 
 export default {
   name: 'Home',
@@ -93,16 +118,27 @@ export default {
     NavMenu,
     Sidebar,
     Card,
-    Cart
+    Cart,
+    ModalCheckout
   },
   data () {
     return {
+      modalActive: false,
       cart: [],
       email: '',
       password: ''
     }
   },
   methods: {
+    toggleModal () {
+      this.modalActive = !this.modalActive
+      if (!this.modalActive) {
+        this.clearModal()
+      }
+    },
+    showModalCheckout () {
+      this.modalActive = !this.modalActive
+    },
     addToCart (item) {
       event.on('form-submitted', data => {
         this.list.push(data)
@@ -151,14 +187,17 @@ export default {
         return item.id === id
       })
     },
-    ...mapActions(['getProducts', 'getProductsByName', 'getProductsByPrice', 'getProductsByNewest', 'handleSearch']),
+    ...mapActions(['getProducts', 'getProductsByName', 'getProductsByPrice', 'getProductsByNewest', 'handleSearch', 'prevPage', 'nextPage']),
     ...mapMutations(['addCart'])
   },
   computed: {
     ...mapGetters({
       products: 'products',
       countCart: 'countCart',
-      getCart: 'getCart'
+      getCart: 'getCart',
+      totalPage: 'totalPage',
+      page: 'page',
+      totalPrice: 'totalPrice'
     })
   },
   mounted () {

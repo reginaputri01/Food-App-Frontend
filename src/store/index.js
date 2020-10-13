@@ -12,19 +12,40 @@ export default new Vuex.Store({
     user: {},
     token: localStorage.getItem('token') || null,
     products: [],
-    paginations: null,
-    carts: []
+    carts: [],
+    checkout: [],
+    totalPrice: 0,
+    histories: [],
+    page: null,
+    totalPage: '',
+    cartCount: 0
   },
   mutations: {
-    setMinus (state) {
-      state.count--
+    setCheckout (state, payload) {
+      state.checkout = payload
     },
-    setPlush (state) {
-      state.count++
+    setPlusCountList (state, index) {
+      state.carts[index].count += 1
+      console.log(state.carts[index])
+    },
+    setTotalPrice (state, payload) {
+      state.totalPrice += payload
+    },
+    setCartCountPlus (state) {
+      state.cartCount++
+    },
+    setCartCountMin (state) {
+      state.cartCount--
+    },
+    setCartCountNull (state) {
+      state.cartCount = 0
     },
     setUser (state, payload) {
       state.user = payload
       state.token = payload.token
+    },
+    setHistory (state, payload) {
+      state.histories = payload
     },
     setProducts (state, payload) {
       state.products = payload
@@ -38,8 +59,29 @@ export default new Vuex.Store({
     setProductsByNewest (state, payload) {
       state.products = payload
     },
-    setPaginations (state, payload) {
-      state.paginations = payload
+    //
+    setProductCart (state, payload) {
+      state.carts.push(payload)
+    },
+    removeProductCart (state, index) {
+      if (index > -1) {
+        state.carts.splice(index, 1)
+      }
+    },
+    setTotalPriceNull (state) {
+      state.totalPrice = 0
+    },
+    setTotalPage (state, payload) {
+      state.totalPage = payload
+    },
+    setPage (state, payload) {
+      state.page = Number(payload)
+    },
+    nextPage (state, payload) {
+      state.page += payload
+    },
+    prevPage (state, payload) {
+      state.page -= payload
     },
     addCart (state, payload) {
       const isCart = state.carts.find((item) => {
@@ -50,15 +92,20 @@ export default new Vuex.Store({
         const item = payload
         item.count = 1
         state.carts.push(item)
+        state.totalPrice += payload.price
       } else {
         console.log(payload.id)
         state.carts = state.carts.filter((item) => {
           return item.id !== payload.id
         })
+        state.totalPrice -= payload.price
       }
     }
   },
   actions: {
+    getCheckout (setex, payload) {
+      setex.commit('setCheckout', payload)
+    },
     interceptorsResponse (context) {
       axios.interceptors.response.use(function (response) {
         return response
@@ -91,7 +138,7 @@ export default new Vuex.Store({
     },
     register (context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://localhost:8000/api/v1/users/register', payload)
+        axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/users/registerAdmin`, payload)
           .then((res) => {
             console.log(res)
             context.commit('setUser', res.data.result)
@@ -105,7 +152,7 @@ export default new Vuex.Store({
     },
     login (context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://localhost:8000/api/v1/users/login', payload)
+        axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/users/loginAdmin`, payload)
           .then((res) => {
             console.log(res)
             context.commit('setUser', res.data.result)
@@ -114,14 +161,13 @@ export default new Vuex.Store({
             resolve(res.data.result[0])
           })
           .catch((err) => {
-            alert('Email / password failed')
             reject(err)
           })
       })
     },
     insertProduct (context, payload) {
       return new Promise((resolve, reject) => {
-        axios.post('http://localhost:8000/api/v1/products', payload)
+        axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/products`, payload)
           .then((res) => {
             console.log(res)
             resolve(res.data.result)
@@ -133,7 +179,7 @@ export default new Vuex.Store({
     },
     editProduct (context, payload) {
       return new Promise((resolve, reject) => {
-        axios.patch('http://localhost:8000/api/v1/products/' + payload.id, payload.data)
+        axios.patch(`${process.env.VUE_APP_ENDPOINT}/api/v1/products/` + payload.id, payload.data)
           .then((res) => {
             resolve(res.data.result)
           })
@@ -144,7 +190,7 @@ export default new Vuex.Store({
     },
     deleteProduct (context, id) {
       return new Promise((resolve, reject) => {
-        axios.delete('http://localhost:8000/api/v1/products/' + id)
+        axios.delete(`${process.env.VUE_APP_ENDPOINT}/api/v1/products/` + id)
           .then((res) => {
             resolve(res.data.result)
           })
@@ -153,9 +199,23 @@ export default new Vuex.Store({
           })
       })
     },
+    getHistory (context) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/histories`)
+          .then((res) => {
+            // console.log(res)
+            context.commit('setHistory', res.data.result)
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            console.log(err)
+            reject(err)
+          })
+      })
+    },
     getProducts (context) {
       return new Promise((resolve, reject) => {
-        axios.get('http://localhost:8000/api/v1/products')
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/products`)
           .then((res) => {
             // console.log(res)
             context.commit('setProducts', res.data.result)
@@ -169,7 +229,7 @@ export default new Vuex.Store({
     },
     getProductsByName (context) {
       return new Promise((resolve, reject) => {
-        axios.get('http://localhost:8000/api/v1/products?sort=name')
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/products?sort=name`)
           .then((res) => {
             // console.log(res)
             context.commit('setProductsByName', res.data.result)
@@ -182,7 +242,7 @@ export default new Vuex.Store({
     },
     getProductsByPrice (context) {
       return new Promise((resolve, reject) => {
-        axios.get('http://localhost:8000/api/v1/products?sort=price')
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/products?sort=price`)
           .then((res) => {
             // console.log(res)
             context.commit('setProductsByPrice', res.data.result)
@@ -195,7 +255,7 @@ export default new Vuex.Store({
     },
     getProductsByNewest (context) {
       return new Promise((resolve, reject) => {
-        axios.get('http://localhost:8000/api/v1/products?sort=createdAt')
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/products?sort=createdAt`)
           .then((res) => {
             // console.log(res)
             context.commit('setProductsByNewest', res.data.result)
@@ -208,7 +268,7 @@ export default new Vuex.Store({
     },
     handleSearch (context, key) {
       return new Promise((resolve, reject) => {
-        axios.get(`http://localhost:8000/api/v1/products?search=${key}`)
+        axios.get(`${process.env.VUE_APP_ENDPOINT}/api/v1/products?search=${key}`)
           .then((res) => {
             resolve(res.data.result)
             context.commit('setProducts', res.data.result)
@@ -219,6 +279,54 @@ export default new Vuex.Store({
             reject(err)
           })
       })
+    },
+    nextPage (context, payload) {
+      return new Promise((resolve, reject) => {
+        context.commit('nextPage', payload)
+        axios.get(process.env.VUE_APP_URL_PRODUCT + '/?page=' + this.state.page)
+          .then((res) => {
+            context.commit('setProducts', res.data.result)
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            console.log(err)
+            reject(err)
+          })
+      })
+    },
+    prevPage (context, payload) {
+      return new Promise((resolve, reject) => {
+        context.commit('prevPage', payload)
+        axios.get(process.env.VUE_APP_URL_PRODUCT + '/?page=' + this.state.page)
+          .then((res) => {
+            context.commit('setProducts', res.data.result)
+            resolve(res.data.result)
+          })
+          .catch((err) => {
+            console.log(err)
+            reject(err)
+          })
+      })
+    },
+    plusCount (setex, payload) {
+      setex.commit('setCartCountPlus')
+    },
+    minusCount (setex, payload) {
+      setex.commit('setCartCountMin')
+    },
+    addTotalPrice (setex, payload) {
+      setex.commit('setTotalPrice', payload)
+    },
+    plusCountItem (setex, id) {
+      // console.log('ini product: ' + id)
+      const index = this.state.carts.map((item) => {
+        return item.id
+      }).indexOf(id)
+      // const index = this.state.carts.map((item) => {
+      //   return item.id
+      // }).indexOf(id)
+      console.log(index)
+      setex.commit('setPlusCountList', index)
     }
   },
   getters: {
@@ -234,11 +342,23 @@ export default new Vuex.Store({
     products (state) {
       return state.products
     },
+    totalPage (state) {
+      return state.totalPage
+    },
     getCart (state) {
       return state.carts
     },
     countCart (state) {
       return state.carts.length
+    },
+    totalPrice (state) {
+      return state.totalPrice
+    },
+    page (state) {
+      return state.page
+    },
+    histories (state) {
+      return state.histories
     }
   }
 })

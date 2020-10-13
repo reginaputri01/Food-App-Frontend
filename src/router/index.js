@@ -44,7 +44,7 @@ const routes = [
     path: '/history',
     name: 'History',
     component: History,
-    meta: { requiresVisitor: true }
+    meta: { requiresAuth: true }
   }
 ]
 

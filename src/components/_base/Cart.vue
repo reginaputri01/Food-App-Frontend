@@ -9,11 +9,12 @@
                     <h5 class="mt-0 mb-1">{{item.name}}</h5>
                     <div class="cart-body">
                         <div class="count-box row">
-                            <button @click="setMin">-</button>
-                            <p name="count" minValue="0" disabled>{{getCount}}</p>
-                            <button @click="setPlush">+</button>
+                            <button @click="setMin(item)">-</button>
+                            <!-- <p name="count" minValue="0" disabled>{{getCount}}</p> -->
+                            <p name="count" minValue="0" disabled>{{item.count}}</p>
+                            <button @click="setPlus(item)">+</button>
                         </div>
-                        <h6>Rp. {{item.price*getCount}}</h6>
+                        <h6>Rp. {{item.price * item.count}}</h6>
                     </div>
                 </div>
             </li>
@@ -22,16 +23,30 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   name: 'Cart',
-  methods: {
-    setPlush () {
-      this.$store.commit('setPlush')
-    },
-    setMin () {
-      this.$store.commit('setMinus')
+  data () {
+    return {
+      itemCheckout: []
     }
+  },
+  methods: {
+    setPlus (item) {
+      console.log(item)
+      //   item.count += 1
+      //   this.$store.commit('setPlush', id)
+      this.plusCountItem(item.id)
+      this.setTotalPrice(item.price)
+    //   console.log(id)
+    },
+    setMin (id) {
+    //   this.$store.commit('setMinus', id)
+    },
+    ...mapActions(['plusCountItem', 'getCheckout']),
+    ...mapMutations(['setTotalPrice'])
+  },
+  mounted () {
   },
   computed: {
     ...mapGetters(['getCart', 'getCount'])

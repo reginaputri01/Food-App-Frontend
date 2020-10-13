@@ -40,8 +40,8 @@ export default {
           this.$toast.success('Login Success.')
           this.$router.push('/home')
         })
-        .catch(() => {
-          this.$toast.error('Login Failed.')
+        .catch((err) => {
+          this.$toast.error(err.response.data.result)
         })
     },
     ...mapActions(['login'])
