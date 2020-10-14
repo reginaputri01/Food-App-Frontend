@@ -33,7 +33,7 @@
                 </div>
                 </div>
                 <div class="column p-3 text-center">
-                  <button type="button" class="btn btn-primary mb-2" @click="postOrder()">Print</button>
+                  <button type="button" class="btn btn-primary mb-2" @click="addHistory">Print</button>
                   <div class="mb-2">Or</div>
                   <button type="button" class="btn btn-secondary">Send Email</button>
                 </div>
@@ -47,30 +47,32 @@ import { mapGetters } from 'vuex'
 import axios from 'axios'
 export default {
   name: 'ModalCheckout',
-  data: () => ({
-    dataModal: {
-      id: null,
-      invoice: 'Reginaput',
-      cashier: 'Pevita Pearce',
-      orders: '',
-      amount: ''
-    }
-  }),
   props: ['products'],
   methods: {
-    postOrder (data) {
-      axios
-        .post(`${process.env.VUE_APP_ENDPOINT}/api/v1/histories`, { orders: this.getCart.name, amount: this.getCart.totalPrice })
+    totalOrder () {
+      return this.getCart.map(({ name }) => name).join(', ')
+    },
+    totalPrice () {
+      return this.getCart.totalPrice
+    },
+    addHistory () {
+      axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/histories`, {
+        invoice: this.name,
+        cashier: 'Pevita Pearce',
+        orders: this.totalOrder(),
+        amount: this.totalPrice
+      })
         .then((res) => {
-          console.log(res)
+          this.$toast.success('Order Success')
         })
         .catch((err) => {
-          console.log(err)
+          this.$toast.error(err.response.data.result)
         })
     }
   },
   computed: {
     ...mapGetters({
+      name: 'name',
       getCart: 'getCart',
       totalPrice: 'totalPrice',
       histories: 'histories'

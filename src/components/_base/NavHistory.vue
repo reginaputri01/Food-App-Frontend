@@ -24,7 +24,8 @@ export default {
     margin-top: 20px;
 }
 .title {
-    width: 92%;
+    width: 97%;
+    text-align: center;
 }
 .title h5 {
     font-size: x-large;

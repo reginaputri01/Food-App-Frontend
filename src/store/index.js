@@ -10,6 +10,7 @@ export default new Vuex.Store({
     minCount: 0,
     user: {},
     token: localStorage.getItem('token') || null,
+    name: localStorage.getItem('name') || null,
     products: [],
     carts: [],
     totalPrice: 0,
@@ -46,6 +47,7 @@ export default new Vuex.Store({
     setUser (state, payload) {
       state.user = payload
       state.token = payload.token
+      state.name = payload.name
     },
     setHistory (state, payload) {
       state.histories = payload
@@ -157,6 +159,7 @@ export default new Vuex.Store({
             console.log(res)
             context.commit('setUser', res.data.result)
             localStorage.setItem('token', res.data.result.token)
+            localStorage.setItem('name', res.data.result.name)
             axios.defaults.headers.common.Authorization = `Bearer ${context.state.token}`
             resolve(res.data.result[0])
           })
@@ -167,6 +170,7 @@ export default new Vuex.Store({
     },
     logout () {
       localStorage.removeItem('token')
+      localStorage.removeItem('name')
     },
     insertProduct (context, payload) {
       return new Promise((resolve, reject) => {
@@ -356,6 +360,9 @@ export default new Vuex.Store({
     },
     isLogin (state) {
       return state.token !== null
+    },
+    name (state) {
+      return state.name
     },
     products (state) {
       return state.products

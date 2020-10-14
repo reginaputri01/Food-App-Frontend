@@ -13,7 +13,7 @@
         <tr v-for="history in histories" :key="history.id">
             <td>{{history.invoice}}</td>
             <td>{{history.cashier}}</td>
-            <td>{{history.date}}</td>
+            <td>{{formatDate(history.date)}}</td>
             <td>{{history.orders}}</td>
             <td>{{history.amount}}</td>
         </tr>
@@ -23,10 +23,14 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import moment from 'moment'
 export default {
   name: 'TableHistory',
   methods: {
-    ...mapActions(['getHistory'])
+    ...mapActions(['getHistory']),
+    formatDate (date) {
+      return moment(date).format('LL')
+    }
   },
   computed: {
     ...mapGetters({

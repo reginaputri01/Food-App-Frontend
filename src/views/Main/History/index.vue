@@ -6,51 +6,11 @@
                 <NavHistory class="navbar"/>
             </div>
             <div class="data-container">
-                <div class="content-data">
-                    <div class="data">
-                        <div class="isi-card">
-                            <h6>Today’s Income</h6>
-                            <h3>Rp. 1.000.000</h3>
-                            <p>+2% Yesterday</p>
-                        </div>
-                        <img src="../../../assets/pink.png" alt="card1">
-                    </div>
-                    <div class="data">
-                        <div class="isi-card">
-                            <h6>Orders</h6>
-                            <h3>3.270</h3>
-                            <p>+5% Last Week</p>
-                        </div>
-                        <img src="../../../assets/blue.png" alt="card2">
-                    </div>
-                    <div class="data">
-                        <div class="isi-card">
-                            <h6>This Year's Income</h6>
-                            <h3>Rp. 100.000.000.000</h3>
-                            <p>+10% Last Year</p>
-                        </div>
-                        <img src="../../../assets/purple.png" alt="card3">
-                    </div>
-                </div>
                 <div class="order-container">
                     <div class="head-container">
                         <h6>Recent Order</h6>
                     </div>
                     <TableHistory />
-                    <!-- <div class="title-table row">
-                        <p class="col-sm">INVOICES</p>
-                        <p class="col-sm">CASHIER</p>
-                        <p class="col-sm">DATE</p>
-                        <p class="col-sm">ORDERS</p>
-                        <p class="col-sm">AMOUNTS</p>
-                    </div>
-                    <div class="isi-table row">
-                        <p class="col-sm">#10928</p>
-                        <p class="col-sm">Cashier 1</p>
-                        <p class="col-sm">06 October 2019</p>
-                        <p class="col-sm">Ice Tea, Salad With peanut sauce</p>
-                        <p class="col-sm">Rp. 120.000</p>
-                    </div> -->
                 </div>
             </div>
         </div>
