@@ -19,16 +19,24 @@
                     <img src="../../assets/folder.png" alt="icon" class="icon">
                 </router-link>
             </div>
-            <div class="img-container">
-                <i class="fa fa-sign-out"></i>
+            <div class="img-container" @click="handleLogout">
+                <img src="../../assets/logout.jpg" alt="icon" class="icon">
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
-  name: 'Sidebar'
+  name: 'Sidebar',
+  methods: {
+    ...mapActions(['logout']),
+    handleLogout () {
+      this.$router.go(0)
+      this.logout()
+    }
+  }
 }
 </script>
 
@@ -44,6 +52,10 @@ export default {
 }
 .img-container {
     text-align: center;
+}
+img:hover {
+    cursor: pointer;
+    opacity: 0.6;
 }
 .icon-menu {
     margin-top: 20px;

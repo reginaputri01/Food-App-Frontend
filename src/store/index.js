@@ -7,13 +7,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    count: 1,
     minCount: 0,
     user: {},
     token: localStorage.getItem('token') || null,
     products: [],
     carts: [],
-    checkout: [],
     totalPrice: 0,
     histories: [],
     page: null,
@@ -21,11 +19,16 @@ export default new Vuex.Store({
     cartCount: 0
   },
   mutations: {
-    setCheckout (state, payload) {
-      state.checkout = payload
-    },
     setPlusCountList (state, index) {
-      state.carts[index].count += 1
+      const value = [...state.carts]
+      value[index].count += 1
+      state.carts = value
+      console.log(state.carts[index])
+    },
+    setMinCountList (state, index) {
+      const value = [...state.carts]
+      value[index].count -= 1
+      state.carts = value
       console.log(state.carts[index])
     },
     setTotalPrice (state, payload) {
@@ -103,9 +106,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    getCheckout (setex, payload) {
-      setex.commit('setCheckout', payload)
-    },
     interceptorsResponse (context) {
       axios.interceptors.response.use(function (response) {
         return response
@@ -165,6 +165,9 @@ export default new Vuex.Store({
           })
       })
     },
+    logout () {
+      localStorage.removeItem('token')
+    },
     insertProduct (context, payload) {
       return new Promise((resolve, reject) => {
         axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/products`, payload)
@@ -209,6 +212,18 @@ export default new Vuex.Store({
           })
           .catch((err) => {
             console.log(err)
+            reject(err)
+          })
+      })
+    },
+    insertHistory (context, payload) {
+      return new Promise((resolve, reject) => {
+        axios.post(`${process.env.VUE_APP_ENDPOINT}/api/v1/histories`, payload)
+          .then((res) => {
+            console.log(res)
+            resolve(res.data.result)
+          })
+          .catch((err) => {
             reject(err)
           })
       })
@@ -308,25 +323,28 @@ export default new Vuex.Store({
           })
       })
     },
-    plusCount (setex, payload) {
-      setex.commit('setCartCountPlus')
+    plusCount (context, payload) {
+      context.commit('setCartCountPlus')
     },
-    minusCount (setex, payload) {
-      setex.commit('setCartCountMin')
+    minusCount (context, payload) {
+      context.commit('setCartCountMin')
     },
-    addTotalPrice (setex, payload) {
-      setex.commit('setTotalPrice', payload)
+    addTotalPrice (context, payload) {
+      context.commit('setTotalPrice', payload)
     },
-    plusCountItem (setex, id) {
-      // console.log('ini product: ' + id)
-      const index = this.state.carts.map((item) => {
-        return item.id
-      }).indexOf(id)
-      // const index = this.state.carts.map((item) => {
-      //   return item.id
-      // }).indexOf(id)
+    plusCountItem (context, id) {
+      const index = context.state.carts.findIndex((item) => {
+        return item.id === id
+      })
       console.log(index)
-      setex.commit('setPlusCountList', index)
+      context.commit('setPlusCountList', index)
+    },
+    minCountItem (context, id) {
+      const index = context.state.carts.findIndex((item) => {
+        return item.id === id
+      })
+      console.log(index)
+      context.commit('setMinCountList', index)
     }
   },
   getters: {

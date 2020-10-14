@@ -34,16 +34,15 @@ export default {
   methods: {
     setPlus (item) {
       console.log(item)
-      //   item.count += 1
-      //   this.$store.commit('setPlush', id)
       this.plusCountItem(item.id)
       this.setTotalPrice(item.price)
-    //   console.log(id)
     },
-    setMin (id) {
-    //   this.$store.commit('setMinus', id)
+    setMin (item) {
+      console.log(item)
+      this.minCountItem(item.id)
+      this.setTotalPrice(item.price)
     },
-    ...mapActions(['plusCountItem', 'getCheckout']),
+    ...mapActions(['plusCountItem', 'minCountItem', 'getCheckout']),
     ...mapMutations(['setTotalPrice'])
   },
   mounted () {
