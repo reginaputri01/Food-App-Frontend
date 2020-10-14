@@ -1,5 +1,5 @@
-# Food-App
-Frontend Food App is a web application created with the Vue JS framework version 2, here I use vuex, mixins, custom directive, local storage, eslint and there are features including login register, food list, checkout, history.
+# Pos-App
+Frontend Pos App is a web application created with the Vue JS framework version 2, here I use vuex, mixins, custom directive, local storage, eslint and there are features including login register, food list, checkout, history.
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
@@ -29,7 +29,7 @@ Frontend Food App is a web application created with the Vue JS framework version
 
 1. Clone the repo
 ```sh
-git clone https://github.com/reginaputri01/food-app-frontend.git
+git clone https://github.com/reginaputri01/PosApp-Frontend.git
 ```
 2. Install NPM packages
 ```sh
@@ -46,7 +46,7 @@ npm run serve
 ```
 
 ## Related Project
-* [`Backend-FoodApp`](https://github.com/reginaputri01/food-app-backend)
+* [`Backend-PosApp`](https://github.com/reginaputri01/PosApp-Backend)
 
 <!-- CONTACT -->
 ## Contact
