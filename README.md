@@ -16,9 +16,9 @@ Frontend Food App is a web application created with the Vue JS framework version
 
 <p align='center'>
   <span>
-      <image width="250" src='./screenshots/home.png' />
-      <image width="250" src='./screenshots/checkout.png' />
-      <image width="250" src='./screenshots/addItem.png' />
+      <image width="350" src='./screenshots/home.png' />
+      <image width="350" src='./screenshots/checkout.png' />
+      <image width="350" src='./screenshots/addItem.png' />
   </span>
 </p>
 
